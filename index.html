@@ -1,0 +1,430 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>QuickDrop - OTP Verification</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#f6f7f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.page{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.card{
+    width:100%;
+    max-width:390px;
+    background:#fff;
+    border-radius:24px;
+    padding:32px 26px 25px;
+    box-shadow:0 15px 45px rgba(0,0,0,.10);
+    text-align:center;
+}
+
+/* Logo */
+.logo{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:30px;
+}
+
+.logo-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#d9ff3f;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:800;
+}
+
+.logo-text{
+    font-size:23px;
+    font-weight:800;
+    color:#171717;
+}
+
+/* Icon */
+.delivery-icon{
+    width:76px;
+    height:76px;
+    margin:0 auto 22px;
+    border-radius:50%;
+    background:#f1ffd1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:35px;
+}
+
+h1{
+    font-size:25px;
+    color:#171717;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#777;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:28px;
+}
+
+/* OTP */
+.otp-container{
+    display:flex;
+    justify-content:center;
+    gap:9px;
+    margin-bottom:20px;
+}
+
+.otp{
+    width:46px;
+    height:54px;
+    border:1.5px solid #ddd;
+    border-radius:12px;
+    text-align:center;
+    font-size:22px;
+    font-weight:700;
+    outline:none;
+    transition:.2s;
+}
+
+.otp:focus{
+    border-color:#111;
+    box-shadow:0 0 0 3px rgba(217,255,63,.35);
+}
+
+/* Button */
+.verify-btn{
+    width:100%;
+    height:52px;
+    border:0;
+    border-radius:13px;
+    background:#171717;
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.verify-btn:hover{
+    transform:translateY(-1px);
+    background:#000;
+}
+
+/* Timer */
+.timer{
+    margin-top:20px;
+    font-size:13px;
+    color:#777;
+}
+
+.resend{
+    border:0;
+    background:none;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    color:#111;
+    display:none;
+}
+
+/* Message */
+.message{
+    min-height:20px;
+    margin-top:15px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.error{
+    color:#d93025;
+}
+
+.success{
+    color:#16803c;
+}
+
+/* Success */
+.success-screen{
+    display:none;
+}
+
+.success-circle{
+    width:78px;
+    height:78px;
+    margin:10px auto 22px;
+    border-radius:50%;
+    background:#eaffd0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:38px;
+}
+
+.success-screen h2{
+    font-size:25px;
+    margin-bottom:10px;
+}
+
+.success-screen p{
+    color:#777;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.footer{
+    margin-top:25px;
+    font-size:11px;
+    color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="card">
+
+        <!-- OTP SCREEN -->
+        <div id="otpScreen">
+
+            <div class="logo">
+                <div class="logo-icon">Q</div>
+                <div class="logo-text">QuickDrop</div>
+            </div>
+
+            <div class="delivery-icon">
+                🛵
+            </div>
+
+            <h1>Verify OTP</h1>
+
+            <p class="subtitle">
+                Enter the 6-digit verification code<br>
+                to continue your delivery.
+            </p>
+
+            <div class="otp-container">
+
+                <input class="otp" maxlength="1" inputmode="numeric">
+                <input class="otp" maxlength="1" inputmode="numeric">
+                <input class="otp" maxlength="1" inputmode="numeric">
+                <input class="otp" maxlength="1" inputmode="numeric">
+                <input class="otp" maxlength="1" inputmode="numeric">
+                <input class="otp" maxlength="1" inputmode="numeric">
+
+            </div>
+
+            <button class="verify-btn" onclick="verifyOTP()">
+                Verify OTP
+            </button>
+
+            <div id="message" class="message"></div>
+
+            <div class="timer">
+                Resend OTP in <span id="countdown">30</span>s
+                <button id="resend" class="resend" onclick="startTimer()">
+                    Resend OTP
+                </button>
+            </div>
+
+            <div class="footer">
+                Demo verification portal
+            </div>
+
+        </div>
+
+
+        <!-- SUCCESS SCREEN -->
+        <div id="successScreen" class="success-screen">
+
+            <div class="logo">
+                <div class="logo-icon">Q</div>
+                <div class="logo-text">QuickDrop</div>
+            </div>
+
+            <div class="success-circle">
+                ✓
+            </div>
+
+            <h2>OTP Verified</h2>
+
+            <p>
+                Verification completed successfully.
+                <br>
+                You can continue to the next step.
+            </p>
+
+            <div class="footer">
+                Demo verification completed
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* Demo OTP */
+const correctOTP = "202622";
+
+const inputs = document.querySelectorAll(".otp");
+const message = document.getElementById("message");
+
+/* Auto move between boxes */
+inputs.forEach((input, index) => {
+
+    input.addEventListener("input", () => {
+
+        input.value = input.value.replace(/[^0-9]/g, "");
+
+        if(input.value && index < inputs.length - 1){
+            inputs[index + 1].focus();
+        }
+
+    });
+
+    input.addEventListener("keydown", (e) => {
+
+        if(e.key === "Backspace" && !input.value && index > 0){
+            inputs[index - 1].focus();
+        }
+
+    });
+
+});
+
+
+/* Paste OTP */
+inputs[0].addEventListener("paste", (e) => {
+
+    e.preventDefault();
+
+    const pasted = e.clipboardData
+        .getData("text")
+        .replace(/\D/g,"")
+        .slice(0,6);
+
+    pasted.split("").forEach((num,index) => {
+        if(inputs[index]){
+            inputs[index].value = num;
+        }
+    });
+
+});
+
+
+/* Verify */
+function verifyOTP(){
+
+    let enteredOTP = "";
+
+    inputs.forEach(input => {
+        enteredOTP += input.value;
+    });
+
+    message.className = "message";
+
+    if(enteredOTP.length !== 6){
+
+        message.textContent = "Please enter the complete OTP.";
+        message.classList.add("error");
+        return;
+
+    }
+
+    if(enteredOTP === correctOTP){
+
+        message.textContent = "Verification successful.";
+        message.classList.add("success");
+
+        setTimeout(() => {
+
+            document.getElementById("otpScreen").style.display = "none";
+            document.getElementById("successScreen").style.display = "block";
+
+        },500);
+
+    }else{
+
+        message.textContent = "Incorrect OTP. Please try again.";
+        message.classList.add("error");
+
+        inputs.forEach(input => {
+            input.value = "";
+        });
+
+        inputs[0].focus();
+    }
+}
+
+
+/* Timer */
+let time = 30;
+let timer;
+
+function startTimer(){
+
+    time = 30;
+
+    document.getElementById("resend").style.display = "none";
+    document.getElementById("countdown").style.display = "inline";
+
+    clearInterval(timer);
+
+    timer = setInterval(() => {
+
+        time--;
+
+        document.getElementById("countdown").textContent = time;
+
+        if(time <= 0){
+
+            clearInterval(timer);
+
+            document.getElementById("countdown").style.display = "none";
+            document.getElementById("resend").style.display = "inline";
+
+        }
+
+    },1000);
+}
+
+startTimer();
+
+</script>
+
+</body>
+</html>
+```
